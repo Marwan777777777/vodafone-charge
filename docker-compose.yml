@@ -1,0 +1,37 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: charge
+      POSTGRES_PASSWORD: charge
+      POSTGRES_DB: charge
+    ports:
+      - "5432:5432"
+    volumes:
+      - charge-pg:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U charge -d charge"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  api:
+    build: ./apps/api
+    ports:
+      - "4000:4000"
+    environment:
+      PORT: 4000
+      NODE_ENV: production
+      DATABASE_URL: postgres://charge:charge@db:5432/charge
+      JWT_SECRET: ${JWT_SECRET:-dev-only-change-me-in-production-please-32b}
+      GARAGE_API_KEY: ${GARAGE_API_KEY:-dev-garage-key-change-me}
+      CORS_ORIGIN: ${CORS_ORIGIN:-*}
+      TZ_NAME: Africa/Cairo
+      HARDWARE_MODE: ${HARDWARE_MODE:-sim}
+      SEED_PASSWORD: ${SEED_PASSWORD:-Charge#22}
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  charge-pg:

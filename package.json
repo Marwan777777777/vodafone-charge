@@ -1,0 +1,20 @@
+{
+  "name": "vodafone-charge",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Vodafone HQ garage EV charging — staff web app + hardware-ready API",
+  "workspaces": [
+    "apps/web",
+    "apps/api"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspaces --if-present",
+    "dev:web": "npm run dev -w @vodafone-charge/web",
+    "dev:api": "npm run dev -w @vodafone-charge/api",
+    "build": "npm run build -w @vodafone-charge/web",
+    "typecheck": "npm run typecheck -w @vodafone-charge/web && npm run typecheck -w @vodafone-charge/api",
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}
